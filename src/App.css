@@ -1,0 +1,45 @@
+/* App specific CSS */
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #2563eb 0%, #7c3aed 100%);
+  background-clip: padding-box;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-color: #3b82f6 transparent;
+  scrollbar-width: thin;
+}
+
+/* Smooth animations on scroll */
+section {
+  scroll-behavior: smooth;
+}
+
+/* Global text selection */
+::selection {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+}
+
+/* Active link indicator */
+a[href]:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease-out;
+}

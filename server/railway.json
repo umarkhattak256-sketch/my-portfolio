@@ -1,0 +1,15 @@
+{
+  "specVersion": "1.0",
+  "build": {
+    "builder": "@railway/nixpacks",
+    "config": {
+      "nixpacks": {
+        "providers": ["nodejs-npm"]
+      }
+    }
+  },
+  "deploy": {
+    "startCommand": "npm start",
+    "healthcheckPath": "/api/health"
+  }
+}

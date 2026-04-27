@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
-import axios from 'axios';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const { isDark } = useContext(ThemeContext);
@@ -15,10 +15,7 @@ const Contact = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -28,14 +25,22 @@ const Contact = () => {
     setSuccess(false);
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-      await axios.post(`${backendUrl}/api/contact`, formData);
+      await emailjs.send(
+        'service_exvbg3b',
+        'template_r9sraok',
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+          email: formData.email,
+        },
+        'nqRpUfAwFRV-QeAQ1'
+      );
       setSuccess(true);
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       setError('Failed to send message. Please try again.');
-      console.error('Error:', err);
     } finally {
       setLoading(false);
     }
@@ -53,52 +58,22 @@ const Contact = () => {
 
         <form onSubmit={handleSubmit} className={`card-shadow p-8 rounded-2xl backdrop-blur-sm ${isDark ? 'bg-dark/40 border border-gray-800' : 'bg-white/50 border border-gray-200'} space-y-6`}>
           <div>
-            <label className={`block text-sm font-semibold mb-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className={`w-full px-4 py-3 rounded-lg border transition-all ${isDark ? 'bg-dark/50 border-gray-700 text-white focus:border-blue-500 focus:bg-dark/70' : 'bg-white/50 border-gray-300 text-gray-900 focus:border-blue-500 focus:bg-white'} focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
-              placeholder="Your name"
-            />
+            <label className={`block text-sm font-semibold mb-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Name</label>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} required className={`w-full px-4 py-3 rounded-lg border transition-all ${isDark ? 'bg-dark/50 border-gray-700 text-white focus:border-blue-500' : 'bg-white/50 border-gray-300 text-gray-900 focus:border-blue-500'} focus:outline-none focus:ring-2 focus:ring-blue-500/20`} placeholder="Your name" />
           </div>
 
           <div>
-            <label className={`block text-sm font-semibold mb-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className={`w-full px-4 py-3 rounded-lg border transition-all ${isDark ? 'bg-dark/50 border-gray-700 text-white focus:border-blue-500 focus:bg-dark/70' : 'bg-white/50 border-gray-300 text-gray-900 focus:border-blue-500 focus:bg-white'} focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
-              placeholder="your.email@example.com"
-            />
+            <label className={`block text-sm font-semibold mb-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Email</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} required className={`w-full px-4 py-3 rounded-lg border transition-all ${isDark ? 'bg-dark/50 border-gray-700 text-white focus:border-blue-500' : 'bg-white/50 border-gray-300 text-gray-900 focus:border-blue-500'} focus:outline-none focus:ring-2 focus:ring-blue-500/20`} placeholder="your.email@example.com" />
           </div>
 
           <div>
-            <label className={`block text-sm font-semibold mb-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-              Message
-            </label>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              required
-              rows="5"
-              className={`w-full px-4 py-3 rounded-lg border transition-all resize-none ${isDark ? 'bg-dark/50 border-gray-700 text-white focus:border-blue-500 focus:bg-dark/70' : 'bg-white/50 border-gray-300 text-gray-900 focus:border-blue-500 focus:bg-white'} focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
-              placeholder="Your message here..."
-            />
+            <label className={`block text-sm font-semibold mb-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Message</label>
+            <textarea name="message" value={formData.message} onChange={handleChange} required rows="5" className={`w-full px-4 py-3 rounded-lg border transition-all resize-none ${isDark ? 'bg-dark/50 border-gray-700 text-white focus:border-blue-500' : 'bg-white/50 border-gray-300 text-gray-900 focus:border-blue-500'} focus:outline-none focus:ring-2 focus:ring-blue-500/20`} placeholder="Your message here..." />
           </div>
 
           {success && (
-            <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-lg font-semibold animate-fade-in">
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-lg font-semibold">
               ✓ Message sent successfully! I'll get back to you soon.
             </div>
           )}
@@ -109,11 +84,7 @@ const Contact = () => {
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:shadow-glow-lg disabled:cursor-not-allowed hover:scale-105"
-          >
+          <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:scale-105">
             {loading ? 'Sending...' : 'Send Message'}
           </button>
         </form>
